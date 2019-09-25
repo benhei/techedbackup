@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='utf-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>cloud-day-demo - Application</name>
+    <description>cloud-day-demo - Application</description>
+
+    <artifactId>cloud-day-demo-application</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+    <parent>
+        <groupId>com.sap.cloud.s4hana.examples</groupId>
+        <artifactId>cloud-day-demo</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.sap.cloud.s4hana.cloudplatform</groupId>
+            <artifactId>scp-cf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sap.cloud.s4hana</groupId>
+            <artifactId>s4hana-all</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet</artifactId>
+            <version>2.4.7.Final</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.2.2</version>
+                <configuration>
+                    <attachClasses>true</attachClasses>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.cargo</groupId>
+                <artifactId>cargo-maven2-plugin</artifactId>
+                <version>1.7.3</version>
+                <configuration>
+                    <container>
+                        <containerId>tomcat8x</containerId>
+                        <artifactInstaller>
+                            <groupId>org.apache.tomcat</groupId>
+                            <artifactId>tomcat</artifactId>
+                            <version>${tomcat.version}</version>
+                        </artifactInstaller>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.slf4j</groupId>
+                                <artifactId>slf4j-api</artifactId>
+                                <classpath>shared</classpath>
+                            </dependency>
+                            <dependency>
+                                <groupId>ch.qos.logback</groupId>
+                                <artifactId>logback-core</artifactId>
+                                <classpath>shared</classpath>
+                            </dependency>
+                            <dependency>
+                                <groupId>ch.qos.logback</groupId>
+                                <artifactId>logback-classic</artifactId>
+                                <classpath>shared</classpath>
+                            </dependency>
+                        </dependencies>
+                        <systemProperties>
+                            <logback.configurationFile>conf/logback.xml</logback.configurationFile>
+                        </systemProperties>
+                    </container>
+                    <configuration>
+                        <properties>
+                            <cargo.jvmargs>-Xmx1024m</cargo.jvmargs>
+                        </properties>
+                        <files>
+                            <copy>
+                                <file>src/main/resources/logback.xml</file>
+                                <tofile>conf/logback.xml</tofile>
+                                <configfile>true</configfile>
+                                <overwrite>true</overwrite>
+                            </copy>
+                        </files>
+                    </configuration>
+                    <deployables>
+                        <deployable>
+                            <properties>
+                                <context>ROOT</context>
+                            </properties>
+                        </deployable>
+                    </deployables>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.sap.cloud.s4hana.plugins</groupId>
+                <artifactId>s4sdk-maven-plugin</artifactId>
+                <version>2.20.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>usage-analytics</goal>
+                        </goals>
+                        <configuration>
+                            <skipUsageAnalytics>false</skipUsageAnalytics>
+                            <generateSalt>true</generateSalt>
+                            <!--
+                            Note: A random salt is auto-generated once the project is built for the first time.
+                            Please keep the generated salt in the POM file, for example, when pushing to git.
+
+                            To learn more, visit: https://blogs.sap.com/2018/10/23/usage-analytics-s4sdk/
+                            -->
+                            <salt />
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

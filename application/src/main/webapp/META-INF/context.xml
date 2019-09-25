@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context>
+    <Resource name="AuditFactory" auth="Container" type="com.sap.xs.audit.api.AuditLogMessageFactory"
+        factory="com.sap.xs.XSObjectFactory" singleton="true" />
+</Context>
